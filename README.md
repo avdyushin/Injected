@@ -27,6 +27,21 @@ Define injected properties:
 @Injected var storage: StorageService
 ```
 
+Iterate over all dependencies:
+
+```swift
+for service in dependencies {
+    service.start()
+}
+```
+
+Access using dynamic member lookup:
+
+```swift
+let location: LocationProtocol? = dependencies.locationService // Erase type to protocol
+let storage: StorageService = dependencies.storageService! // Force unwarp if needed
+```
+
 More details on implementation and usage is [here](https://grigory.nl/posts/swift-property-wrappers/)
 
 ### How to add it to Xcode project?

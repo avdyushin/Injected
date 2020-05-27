@@ -6,6 +6,8 @@
 //  Copyright © 2020 Grigory Avdyushin. All rights reserved.
 //
 
+import Foundation
+
 public struct Dependency {
 
     public typealias ResolveBlock<T> = () -> T
@@ -24,6 +26,7 @@ public struct Dependency {
     }
 }
 
+@dynamicMemberLookup
 open class Dependencies: Sequence {
 
     static private(set) var shared = Dependencies()
@@ -43,6 +46,7 @@ open class Dependencies: Sequence {
         register(dependency())
     }
 
+    /// Builds (resolves) all dependencies graph
     open func build() {
         // We assuming that at this point all needed dependencies are registered
         for index in dependencies.startIndex..<dependencies.endIndex {
@@ -51,9 +55,16 @@ open class Dependencies: Sequence {
         Self.shared = self
     }
 
+    /// Returns iterator for all registered dependencies
     public func makeIterator() -> AnyIterator<Any> {
         var iter = dependencies.makeIterator()
         return AnyIterator { iter.next()?.value }
+    }
+
+    /// Return dependency by given camelCase name of the object type
+    /// For example: if dependency registered as `MyService` name should be `myService`
+    public subscript<T>(dynamicMember name: String) -> T? {
+        dependencies.first { $0.name == name.prefix(1).capitalized + name.dropFirst() }?.value as? T
     }
 
     // MARK: - Private

@@ -40,6 +40,19 @@ final class InjectedTests: XCTestCase {
         XCTAssertEqual(serviceB.fetch().first, "Foo")
     }
 
+    func testIterator() {
+        for service in deps {
+            XCTAssertTrue(service is ServiceA || service is ServiceB)
+        }
+    }
+
+    func testMemberLookup() {
+        let serviceA: ServiceA = deps.serviceAImpl!
+        XCTAssertTrue(serviceA.run())
+        let serviceB: ServiceB = deps.serviceBImpl!
+        XCTAssertEqual(serviceB.fetch().first, "Foo")
+    }
+
     static var allTests = [
         ("testExample", testExample),
     ]
