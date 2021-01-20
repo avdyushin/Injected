@@ -53,6 +53,13 @@ final class InjectedTests: XCTestCase {
         XCTAssertEqual(serviceB.fetch().first, "Foo")
     }
 
+    func testShared() {
+        let serviceA: ServiceA = Dependencies.shared.resolve()
+        XCTAssertTrue(serviceA.run())
+        let serviceB: ServiceB = Dependencies.shared.resolve()
+        XCTAssertEqual(serviceB.fetch().first, "Foo")
+    }
+
     static var allTests = [
         ("testExample", testExample),
     ]

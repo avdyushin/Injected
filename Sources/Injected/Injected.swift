@@ -61,10 +61,18 @@ open class Dependencies: Sequence {
         return AnyIterator { iter.next()?.value }
     }
 
-    /// Return dependency by given camelCase name of the object type
+    /// Returns dependency by given camelCase name of the object type
     /// For example: if dependency registered as `MyService` name should be `myService`
     public subscript<T>(dynamicMember name: String) -> T? {
         dependencies.first { $0.name == name.prefix(1).capitalized + name.dropFirst() }?.value as? T
+    }
+
+    /// Returns resolved dependency
+    public func resolve<T>() -> T {
+        guard let dependency = dependencies.first(where: { $0.value is T })?.value as? T else {
+            fatalError("Can't resolve \(T.self)")
+        }
+        return dependency
     }
 
     // MARK: - Private
@@ -78,13 +86,6 @@ open class Dependencies: Sequence {
             return
         }
         dependencies.append(dependency)
-    }
-
-    fileprivate func resolve<T>() -> T {
-        guard let dependency = dependencies.first(where: { $0.value is T })?.value as? T else {
-            fatalError("Can't resolve \(T.self)")
-        }
-        return dependency
     }
 }
 
