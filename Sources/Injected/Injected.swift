@@ -29,7 +29,7 @@ public struct Dependency {
 @dynamicMemberLookup
 open class Dependencies: Sequence {
 
-    static private(set) var shared = Dependencies()
+    static private(set) public var shared = Dependencies()
 
     fileprivate var dependencies = [Dependency]()
 
